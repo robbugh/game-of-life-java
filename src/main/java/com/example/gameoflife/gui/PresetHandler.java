@@ -1,16 +1,6 @@
-package gof.gui;
+package com.example.gameoflife.gui;
 
-import gof.core.Board;
-import gof.core.Cell;
-
-import java.io.File;
-import java.io.FileFilter;
-import java.io.FileNotFoundException;
-import java.util.Scanner;
-
-import javafx.scene.Group;
-import javafx.scene.Node;
-import javafx.scene.control.Button;
+import com.example.gameoflife.core.Board;
 import javafx.scene.control.Label;
 import javafx.scene.control.Pagination;
 import javafx.scene.control.TextArea;
@@ -20,7 +10,8 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.util.Callback;
+
+import java.io.File;
 
 public class PresetHandler {
     private String[] presets;
@@ -30,32 +21,29 @@ public class PresetHandler {
     public AnchorPane loadPresets(FlowPane base) {
         
         File dir = new File("Presets");
-        File[] selectedFiles = dir.listFiles(new FileFilter() {
-            @Override
-            public boolean accept(File pathname) {
-                if (pathname.getName().endsWith(".gofb")){
-                    presetCount++;
-                    return true;}
-                return false;
-            }
+        File[] selectedFiles = dir.listFiles(pathname -> {
+            if (pathname.getName().endsWith(".gofb")){
+                presetCount++;
+                return true;}
+            return false;
         });
-        int pr = 0;
-        presets = new String[presetCount];
-        for (File selectedFile : selectedFiles) {
-            presets[pr] = selectedFile.getName().substring(0, selectedFile.getName().length() - 5);
-            pr++;
+
+        if (selectedFiles != null) {
+            int pr = 0;
+            presets = new String[presetCount];
+            for (File selectedFile : selectedFiles) {
+                presets[pr] = selectedFile.getName().substring(0, selectedFile.getName().length() - 5);
+                pr++;
+            }
         }
 
         Pagination presetsPagination = new Pagination(presets.length, 0);
         //pagination.setStyle("-fx-border-color:red;");
-        presetsPagination.setPageFactory(new Callback<Integer, Node>() {
-            @Override
-            public Node call(Integer pageIndex) {
-                if (pageIndex >= presets.length) {
-                    return null;
-                } else {
-                    return createPresetPage(pageIndex, base);
-                }
+        presetsPagination.setPageFactory(pageIndex -> {
+            if (pageIndex >= presets.length) {
+                return null;
+            } else {
+                return createPresetPage(pageIndex);
             }
         });
 
@@ -74,7 +62,7 @@ public class PresetHandler {
         return FileHandler.loadFromFile(selectedFile, defaultSize);
     }
     
-    private VBox createPresetPage(int pageIndex, FlowPane base) {
+    private VBox createPresetPage(int pageIndex) {
         VBox box = new VBox(5);
         for (int i = pageIndex; i < pageIndex + 1; i++) {
             TextArea text = new TextArea(presets[i]);

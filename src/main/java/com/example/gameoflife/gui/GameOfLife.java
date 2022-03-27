@@ -1,19 +1,22 @@
-package gof.gui;
+package com.example.gameoflife.gui;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+
+import java.net.URL;
 
 public class GameOfLife extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        Parent parent = FXMLLoader.load(getClass().getResource("gui.fxml"));
+        URL url = GameOfLife.class.getResource("gui.fxml");
+        FXMLLoader fxmlLoader = new FXMLLoader(url);
+        Scene scene = new Scene(fxmlLoader.load());
 
         primaryStage.setTitle("Conway's Game of Life");
-        primaryStage.setScene(new Scene(parent));
+        primaryStage.setScene(scene);
         primaryStage.show();
     }
 

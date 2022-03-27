@@ -1,11 +1,11 @@
-package gof.console;
+package com.example.gameoflife.console;
+import com.example.gameoflife.core.Board;
+import com.example.gameoflife.core.DisplayDriver;
+
 import java.awt.AWTException;
 import java.awt.Robot;
 import java.awt.event.KeyEvent;
 
-import gof.core.Board;
-import gof.core.Cell;
-import gof.core.DisplayDriver;
 
 public class Display {
     public static DisplayDriver getDriver() {
@@ -24,7 +24,7 @@ public class Display {
     private Display() {}
 
     private static class EclipseDriver extends ConsoleDriver {
-        private Robot eclipse;
+        private final Robot eclipse;
         
         public EclipseDriver() throws AWTException {
             eclipse = new Robot();

@@ -1,8 +1,8 @@
-package gof.console;
-import java.util.Scanner;
+package com.example.gameoflife.console;
+import com.example.gameoflife.core.Board;
+import com.example.gameoflife.core.DisplayDriver;
 
-import gof.core.Board;
-import gof.core.DisplayDriver;
+import java.util.Scanner;
 
 public class GameOfLife {
 

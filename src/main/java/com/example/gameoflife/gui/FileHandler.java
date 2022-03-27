@@ -1,16 +1,16 @@
-package gof.gui;
+package com.example.gameoflife.gui;
+
+import com.example.gameoflife.core.Board;
+import com.example.gameoflife.core.Cell;
+import javafx.stage.FileChooser;
+import javafx.stage.FileChooser.ExtensionFilter;
+import javafx.stage.Stage;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Scanner;
-
-import javafx.stage.FileChooser;
-import javafx.stage.Stage;
-import javafx.stage.FileChooser.ExtensionFilter;
-import gof.core.Board;
-import gof.core.Cell;
 
 public class FileHandler {
 
@@ -24,12 +24,12 @@ public class FileHandler {
     }
     
     public static Board loadFromFile(File file, int defaultSize) {
-        String input = "";
+        StringBuilder input = new StringBuilder();
         int sz = defaultSize;
         try (Scanner s = new Scanner(file)) {
             while (s.hasNextLine()) {
                 String line = s.nextLine().replaceAll("\\s+","");
-                input += line;
+                input.append(line);
                 
                 sz = line.length();
             }
@@ -45,8 +45,13 @@ public class FileHandler {
         int pos = 0;
         for (int i = 0; i < sz; i++) {
             for (int j = 0; j < sz; j++) {
-                boolean state = (input.charAt(pos) =='1');
-                g[i][j] = new Cell(state);
+                char state = input.charAt(pos);
+                switch (state) {
+                    case '1' -> g[i][j] = new Cell(Cell.CellState.LEVEL_1);
+                    case '2' -> g[i][j] = new Cell(Cell.CellState.LEVEL_2);
+                    case '3' -> g[i][j] = new Cell(Cell.CellState.LEVEL_3);
+                    default -> g[i][j] = new Cell(Cell.CellState.OFF);
+                }
                 pos++;
             }
         }
@@ -54,28 +59,24 @@ public class FileHandler {
         return new Board(g);        
     }
     
-    public static void saveToFile(Board board) {
+    public static void saveToFile(Board board) throws IOException {
         File file = askForSaveFile();
         if (file == null) {
             return;
         }
         
-        String output = ""; // string of numbers from board
-        Cell[][] g = board.getGrid();
-        for (int i = 0; i < g.length; i++) {
-            for (int j = 0; j < g[0].length; j++) {
-                output+= g[i][j].getState() ? 1 : 0;
+        StringBuilder output = new StringBuilder(); // string of numbers from board
+        for (int i = 0; i < board.getWidth(); i++) {
+            for (int j = 0; j < board.getHeight(); j++) {
+                output.append(board.getCell(i,j).getState().getLevelCode());
             }
-            if (i != g.length-1){
-                output+="\n";
+            if (i != board.getWidth()-1) {
+                output.append("\n");
             }
         }
 
         try (FileWriter fileWriter = new FileWriter(file)) {
-            fileWriter.write(output);
-            fileWriter.close();
-        } catch (IOException ex) {
-            System.out.println(ex);
+            fileWriter.write(output.toString());
         }
     }
 
